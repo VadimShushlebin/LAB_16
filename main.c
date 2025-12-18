@@ -1,4 +1,4 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include "array.h"
@@ -75,7 +75,7 @@ void task14(int size) {
     }
 
     // Задание 1. Заполнение массива значениями из функции f(x)
-    full_elements(array, size);
+    full_elements(array, size, 0.0, 0.5);
     put_elements(array, size);
 
     // Задание 2. Преобразование массива
@@ -98,15 +98,15 @@ void task14(int size) {
     printf("Индекс искомого числа: %d", find_element(array, size, elem));
 
     // Задание 5. Поиск порядкового номера минимального значения элементов, кратных k.
-    int k;
+    double k;
     printf("\n\nВведите k для поиска минимального кратного элемента: ");
-    scanf("%d", &k);
+    scanf("%lf", &k);
     int min_idx = find_min(array, size, k);
-    printf("Индекс минимального элемента, кратного %d: %d\n", k, min_idx);
+    printf("Индекс минимального элемента, кратного %.3lf: %d\n", k, min_idx);
 
     free(array);
 
-    
+
     int* arr = (int*)malloc(size * sizeof(int));
 
     if (arr == NULL) {
@@ -143,7 +143,7 @@ void task16(int size) {
     }
 
     // Задание 1. Заполнение массива значениями функции f(x) 
-    full_elements(ptr_array1, size);
+    full_elements(ptr_array1, size, 0.0, 0.5);
     printf("Исходный массив:\n");
     put_elements(ptr_array1, size);
 
@@ -153,16 +153,16 @@ void task16(int size) {
     put_elements(ptr_array1, size);
 
     free(ptr_array1);
-    int k;
 
+    int k;
     double* ptr_array2 = (double*)malloc(size * sizeof(double));
     if (ptr_array2 == NULL) {
         puts("Ошибка выделения памяти");
         return;
     }
 
-    // 3адание 3. Заполнение массива
-    full_elements_task2(ptr_array2, size);
+    // Задание 3. Заполнение массива
+    full_elements(ptr_array2, size, 0.0, 0.1);
     printf("Получившийся массив:\n");
     put_elements(ptr_array2, size);
 
@@ -183,4 +183,37 @@ void task16(int size) {
     printf("Новый размер массива: %d\n", size_after_delete);
 
     free(ptr_array2);
+
+    // ДЗ.Создание массива D из элементов массива C, а также положительными элементами из массива A перед максимальным элементом массива D
+
+    double* A = (double*)malloc(size * sizeof(double));
+    double* C = (double*)malloc(size * sizeof(double));
+
+    if (A == NULL || C == NULL) {
+        puts("Ошибка выделения памяти");
+        free(A); free(C);
+        return;
+    }
+
+    printf("\nМассив A:\n");
+    full_elements(A, size, -1.0, 0.8);
+    put_elements(A, size);
+
+    printf("\nМассив C:\n");
+    full_elements(C, size, -1.5, 0.2);
+    put_elements(C, size);
+
+
+    int D_size;
+    double* D = create_array_D(A, size, C, size, &D_size);
+
+    printf("\nМассив D\n");
+    if (D_size > 0) {
+        put_elements(D, D_size);
+    }
+    else {
+        printf("Нет положительных элементов перед максимальным\n");
+    }
+
+    free(A); free(C); free(D);
 }
