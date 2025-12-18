@@ -1,20 +1,19 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 #define _USE_MATH_DEFINES
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include "array.h"
 
-
 double f(double x) {
     return x * x * x - 4 * x * x + 2;
 }
 
-double* full_elements(double* ptr_array, int n) {
-    double x = 0.0;
+double* full_elements(double* ptr_array, int n, double start, double step) {
+    double x = start;
     for (int i = 0; i < n; i++) {
         ptr_array[i] = f(x);
-        x += 0.5;
+        x += step;
     }
     return ptr_array;
 }
@@ -64,28 +63,18 @@ int find_element(double* ptr_array, int n, double element) {
     return -1;
 }
 
-int find_min(double* ptr_array, int n, int k) {
+int find_min(double* ptr_array, int n, double k) {
     int min_index = -1;
-    double min_v = 1000000.0;
 
     for (int i = 0; i < n; i++) {
         if (fabs(fmod(ptr_array[i], k)) < 0.000001) {
-            if (ptr_array[i] < min_v) {
-                min_v = ptr_array[i];
+            if (min_index == -1 || ptr_array[i] < ptr_array[min_index]) {
                 min_index = i;
             }
         }
     }
 
     return min_index;
-}
-
-
-double* full_elements_task2(double* ptr_array, int n) {
-    for (int i = 0; i < n; i++) {
-        ptr_array[i] = 0.1 * i - 0.5;
-    }
-    return ptr_array;
 }
 
 int put_elements(double* ptr_array, int n) {
@@ -138,4 +127,48 @@ double* insert_after_k(double* ptr_arr, int* size, int k) {
 
     *size = size_n;
     return new_arr;
+}
+double* create_array_D(double* A, int n, double* C, int m, int* D_size) {
+
+    int max_index = 0;
+    for (int i = 1; i < m; i++) {
+        if (C[i] > C[max_index]) {
+            max_index = i;
+        }
+    }
+
+    int pos_count = 0;
+    for (int i = 0; i < n; i++) {
+        if (A[i] > 0) {
+            pos_count++;
+        }
+    }
+
+    int tot_size = m + pos_count;
+
+
+    double* D = (double*)malloc(tot_size * sizeof(double));
+    if (D == NULL) {
+        *D_size = 0;
+        return NULL;
+    }
+
+    int d_index = 0;
+
+    for (int i = 0; i < max_index; i++) {
+        D[d_index++] = C[i];
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (A[i] > 0) {
+            D[d_index++] = A[i];
+        }
+    }
+
+    for (int i = max_index; i < m; i++) {
+        D[d_index++] = C[i];
+    }
+
+    *D_size = tot_size;
+    return D;
 }
